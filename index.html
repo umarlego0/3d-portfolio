@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Muhammad Umar Farooq | Handcrafted 3D Portfolio & CV</title>
+  <meta name="description" content="Handcrafted 3D cardboard diorama and interactive portfolio of Muhammad Umar Farooq - CS Student, Game Developer, 3D Generalist & Video Editor.">
+  <meta name="theme-color" content="#F4E6C8">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Muhammad Umar Farooq | Handcrafted 3D Portfolio">
+  <meta property="og:description" content="Explore my tactile 3D craft workshop diorama portfolio, CV, projects, and playable mascot stage.">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700;800;900&family=Lilita+One&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Patrick+Hand&family=Rubik+Bubbles&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Three.js Import Map for standard CDN ES Modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- 3D Canvas Background Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Virtual Scroll Space for Camera Track Interpolation in Tour Mode -->
+  <div id="scroll-track">
+    <div class="scroll-section" data-zone="intro"></div>
+    <div class="scroll-section" data-zone="about"></div>
+    <div class="scroll-section" data-zone="skills"></div>
+    <div class="scroll-section" data-zone="experience"></div>
+    <div class="scroll-section" data-zone="projects"></div>
+    <div class="scroll-section" data-zone="contact"></div>
+  </div>
+
+  <!-- Tactile Craft HUD & UI Layer -->
+  <div id="ui-overlay">
+
+    <!-- Top Hanging Twine Line with Stitched Pennants & Mode Switcher -->
+    <header id="top-craft-rack">
+      <!-- Twine String -->
+      <div class="twine-string-line"></div>
+
+      <div class="rack-content">
+        <!-- Top Left: Title Badge & Masking Tape Note -->
+        <div class="craft-header-card">
+          <div class="pushpin pin-red"></div>
+          <div class="header-sticker-group">
+            <span class="tape-tag" id="header-headline">CS STUDENT & CREATOR</span>
+            <h1 class="sticker-name" id="header-fullname">MUHAMMAD UMAR FAROOQ</h1>
+            <span class="sticker-sub" id="header-subheadline">Game Developer &bull; 3D Generalist &bull; Video Editor</span>
+          </div>
+        </div>
+
+        <!-- Center: Stitched Fabric Pennants Navigation (hanging with clothespins) -->
+        <nav class="pennants-nav" aria-label="Craft stage navigation">
+          <!-- Pennant 1: About -->
+          <div class="pennant-clip-wrapper">
+            <div class="wooden-clothespin"></div>
+            <button class="fabric-pennant pennant-cyan" data-action="about" title="About Me & Education">
+              <span class="pennant-stitch"></span>
+              <span class="pennant-text">ABOUT</span>
+              <span class="ribbon-tail tail-yellow"></span>
+            </button>
+          </div>
+
+          <!-- Pennant 2: Skills -->
+          <div class="pennant-clip-wrapper">
+            <div class="wooden-clothespin"></div>
+            <button class="fabric-pennant pennant-green" data-action="skills" title="Skills & Level Select">
+              <span class="pennant-stitch"></span>
+              <span class="pennant-text">SKILLS</span>
+              <span class="ribbon-tail tail-blue"></span>
+            </button>
+          </div>
+
+          <!-- Pennant 3: Experience -->
+          <div class="pennant-clip-wrapper">
+            <div class="wooden-clothespin"></div>
+            <button class="fabric-pennant pennant-amber" data-action="experience" title="Experience Roll">
+              <span class="pennant-stitch"></span>
+              <span class="pennant-text">EXPERIENCE</span>
+              <span class="ribbon-tail tail-crimson"></span>
+            </button>
+          </div>
+
+          <!-- Pennant 4: Projects -->
+          <div class="pennant-clip-wrapper">
+            <div class="wooden-clothespin"></div>
+            <button class="fabric-pennant pennant-magenta" data-action="projects" title="Portfolio & Projects">
+              <span class="pennant-stitch"></span>
+              <span class="pennant-text">PROJECTS</span>
+              <span class="ribbon-tail tail-teal"></span>
+            </button>
+          </div>
+
+          <!-- Pennant 5: Contact -->
+          <div class="pennant-clip-wrapper">
+            <div class="wooden-clothespin"></div>
+            <button class="fabric-pennant pennant-denim" data-action="contact" title="Get in Touch & Download CV">
+              <span class="pennant-stitch"></span>
+              <span class="pennant-text">CONTACT</span>
+              <span class="ribbon-tail tail-gold"></span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Top Right: Interactive Controls & Actions -->
+        <div class="top-actions-group">
+          <!-- Mode Switcher: Play Stage vs Tour Mode -->
+          <div class="mode-toggle-card">
+            <span class="tape-label">STAGE MODE</span>
+            <button id="mode-toggle-btn" class="craft-toggle-btn play-active" title="Switch between Interactive Playable Mascot and Guided Tour Mode">
+              <span class="toggle-track">
+                <span class="toggle-option opt-play"><i class="fa-solid fa-gamepad"></i> PLAY</span>
+                <span class="toggle-option opt-tour"><i class="fa-solid fa-compass"></i> TOUR</span>
+                <span class="toggle-slider"></span>
+              </span>
+            </button>
+          </div>
+
+          <!-- Audio SFX Toggle Button -->
+          <button id="sfx-toggle-btn" class="button-badge btn-sfx" title="Toggle Tactile Sound Effects" aria-label="Toggle sound">
+            <div class="sewing-button button-gold">
+              <div class="button-hole hole-1"></div>
+              <div class="button-hole hole-2"></div>
+              <div class="button-hole hole-3"></div>
+              <div class="button-hole hole-4"></div>
+              <i class="fa-solid fa-volume-high" id="sfx-icon"></i>
+            </div>
+            <span class="button-caption">SFX</span>
+          </button>
+
+          <!-- Download CV Button -->
+          <button id="download-cv-btn" class="button-badge btn-cv" title="Download CV (PDF)" aria-label="Download CV">
+            <div class="sewing-button button-denim">
+              <div class="button-hole hole-1"></div>
+              <div class="button-hole hole-2"></div>
+              <div class="button-hole hole-3"></div>
+              <div class="button-hole hole-4"></div>
+              <i class="fa-solid fa-file-arrow-down"></i>
+            </div>
+            <span class="button-caption">CV</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Side Craft Badges & Quick Prompts -->
+    <!-- Left Stage Guide: "START / ABOUT ME" & "PLAY STAGE" notes -->
+    <aside class="side-notes side-notes-left">
+      <div class="taped-paper-note note-start" data-action="about">
+        <span class="tape-strip tape-top-center"></span>
+        <div class="note-inner">
+          <i class="fa-solid fa-hand-point-right"></i>
+          <span class="note-title">START / ABOUT ME</span>
+        </div>
+        <span class="note-sub">Click board or walk mascot</span>
+      </div>
+
+      <div class="taped-paper-note note-play" id="note-play-trigger">
+        <span class="tape-strip tape-angled"></span>
+        <div class="note-inner">
+          <i class="fa-solid fa-gamepad"></i>
+          <span class="note-title">PLAY GAME</span>
+        </div>
+        <span class="note-sub">A/D + Spacebar to jump</span>
+      </div>
+    </aside>
+
+    <!-- Right Stage Badge: "PRIZE / SHOWCASE" Starburst & Projects -->
+    <aside class="side-notes side-notes-right">
+      <div class="starburst-badge prize-badge" data-action="projects" title="Featured Projects Showcase">
+        <div class="starburst-teeth"></div>
+        <div class="starburst-core">
+          <span class="prize-title">PRIZE</span>
+          <span class="prize-sub">SHOWCASE</span>
+        </div>
+        <div class="pushpin pin-blue"></div>
+      </div>
+
+      <div class="taped-paper-note note-projects" data-action="projects">
+        <span class="tape-strip tape-top-center"></span>
+        <div class="note-inner">
+          <i class="fa-solid fa-camera-retro"></i>
+          <span class="note-title">PORTFOLIO / PROJECTS</span>
+        </div>
+        <span class="note-sub">Click hanging Polaroids!</span>
+      </div>
+    </aside>
+
+    <!-- Bottom Stage Guide & Controls -->
+    <!-- Bottom Left: Keyboard / Touch Controls Guide -->
+    <div id="controls-hint-card" class="craft-controls-hint">
+      <span class="tape-strip tape-left"></span>
+      <div class="controls-content">
+        <div class="controls-icons">
+          <span class="key-badge">A</span>
+          <span class="key-badge">D</span>
+          <span class="key-label">MOVE</span>
+          <span class="key-badge key-space">SPACE</span>
+          <span class="key-label">JUMP</span>
+          <span class="key-badge">E</span>
+          <span class="key-label">INSPECT</span>
+        </div>
+        <span class="controls-instruction">Walk to stage totems to inspect!</span>
+      </div>
+    </div>
+
+    <!-- On-Screen Touch Controls (Visible on mobile/tablets or touch devices) -->
+    <div id="mobile-touch-controls" class="touch-controls-hidden">
+      <div class="dpad-group">
+        <button id="touch-left" class="touch-btn" aria-label="Move Left"><i class="fa-solid fa-arrow-left"></i></button>
+        <button id="touch-right" class="touch-btn" aria-label="Move Right"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="action-group">
+        <button id="touch-interact" class="touch-btn touch-action" aria-label="Interact"><i class="fa-solid fa-hand-pointer"></i></button>
+        <button id="touch-jump" class="touch-btn touch-jump" aria-label="Jump"><i class="fa-solid fa-arrow-up"></i> JUMP</button>
+      </div>
+    </div>
+
+    <!-- Bottom Center: Dotted Ink Trail & Mouse Indicator (Guided Tour Mode) -->
+    <div id="scroll-mouse-indicator" role="button" tabindex="0" data-action="next-zone" aria-label="Scroll or click to tour diorama zones">
+      <div class="dotted-ink-trail">
+        <svg viewBox="0 0 140 24" class="trail-svg">
+          <path d="M 4 14 Q 35 4, 70 14 T 130 14" fill="none" stroke="#2B1E16" stroke-width="2.5" stroke-dasharray="4,5" stroke-linecap="round"/>
+          <polygon points="130,9 138,14 130,19" fill="#2B1E16" />
+        </svg>
+      </div>
+      <div class="indicator-mouse-box">
+        <span class="indicator-label">SCROLL TO EXPLORE</span>
+        <div class="hand-drawn-mouse">
+          <div class="mouse-outline">
+            <span class="mouse-scroll-wheel"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Right: Contact & Quick Links Corner -->
+    <div id="quick-contact-dock">
+      <div class="mailbox-card" data-action="contact" title="Open Contact Scrapbook">
+        <span class="tape-strip tape-top-right"></span>
+        <div class="mailbox-icon">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div class="mailbox-text">
+          <span class="mailbox-title">MESSAGE ME</span>
+          <span class="mailbox-sub">Umarleg01@gmail.com</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D Raycaster Floating Torn-Paper Tooltip -->
+    <div id="craft-tooltip" class="craft-tooltip-hidden" aria-live="polite">
+      <div class="tooltip-body">
+        <div class="pushpin pin-yellow"></div>
+        <div class="tooltip-badge-row">
+          <span class="tooltip-icon" id="tooltip-icon"><i class="fa-solid fa-sparkles"></i></span>
+          <span class="tooltip-title" id="tooltip-title">Stage Prop</span>
+        </div>
+        <p class="tooltip-desc" id="tooltip-desc">Description</p>
+        <span class="tooltip-cta" id="tooltip-cta"><i class="fa-solid fa-arrow-pointer"></i> Click to inspect</span>
+      </div>
+    </div>
+
+    <!-- Active Stage Zone Waypoint Navigator (Dots on twine) -->
+    <nav id="zone-waypoint-nav" aria-label="Stage Zone Waypoints">
+      <button class="waypoint-btn active" data-zone="intro" title="Zone 1: Intro Stage">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">Intro</span>
+      </button>
+      <button class="waypoint-btn" data-zone="about" title="Zone 2: About & Education">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">About</span>
+      </button>
+      <button class="waypoint-btn" data-zone="skills" title="Zone 3: Skills & Level Select">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">Skills</span>
+      </button>
+      <button class="waypoint-btn" data-zone="experience" title="Zone 4: Experience Roll">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">Experience</span>
+      </button>
+      <button class="waypoint-btn" data-zone="projects" title="Zone 5: Project Polaroids">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">Projects</span>
+      </button>
+      <button class="waypoint-btn" data-zone="contact" title="Zone 6: Contact & Mailbox">
+        <span class="waypoint-button-hole"></span>
+        <span class="waypoint-tooltip">Contact</span>
+      </button>
+    </nav>
+
+  </div> <!-- /#ui-overlay -->
+
+
+  <!-- ============================================================ -->
+  <!-- HANDCRAFTED SCRAPBOOK MODAL SYSTEM (CV & PORTFOLIO CONTENT) -->
+  <!-- ============================================================ -->
+  <div id="scrapbook-modal-backdrop" class="modal-backdrop-hidden" aria-hidden="true">
+    <div class="scrapbook-modal-dialog" id="scrapbook-modal" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+
+      <!-- Modal Cardboard & Fabric Top Tab -->
+      <div class="modal-craft-header">
+        <div class="modal-clothespin">
+          <div class="wooden-clothespin"></div>
+        </div>
+
+        <div class="modal-title-tape">
+          <span class="tape-strip tape-center"></span>
+          <div class="modal-title-flex">
+            <span class="modal-icon-badge" id="modal-icon"><i class="fa-solid fa-scissors"></i></span>
+            <div>
+              <span class="modal-category-tag" id="modal-category">WORKSHOP SCRAPBOOK</span>
+              <h2 class="modal-headline" id="modal-headline">ABOUT & EDUCATION</h2>
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Sewing Button Close Button -->
+        <button class="modal-close-button" id="modal-close-btn" aria-label="Close scrapbook dialog">
+          <div class="sewing-button button-crimson">
+            <div class="button-hole hole-1"></div>
+            <div class="button-hole hole-2"></div>
+            <div class="button-hole hole-3"></div>
+            <div class="button-hole hole-4"></div>
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Modal Scrollable Scrapbook Page Body -->
+      <div class="modal-scrapbook-paper" id="modal-body-content">
+        <!-- Injected dynamically from data.json via app.js -->
+      </div>
+
+      <!-- Modal Cardboard Footer with Stitched Ribbon and Action -->
+      <div class="modal-craft-footer">
+        <div class="stitched-ribbon-tag">
+          <span class="tag-stitch"></span>
+          <span class="tag-label" id="modal-footer-caption">Handcrafted Portfolio Stage &bull; 2026</span>
+        </div>
+        <div class="modal-footer-actions" id="modal-footer-actions">
+          <button class="craft-btn craft-btn-primary" id="modal-primary-btn">
+            <i class="fa-solid fa-check"></i> <span>Acknowledge</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Floating Toast Notification (Torn Paper Note) -->
+  <div id="craft-toast" class="toast-hidden" role="alert" aria-live="assertive">
+    <span class="tape-strip tape-top-center"></span>
+    <div class="toast-body">
+      <span class="toast-icon" id="toast-icon"><i class="fa-solid fa-scissors"></i></span>
+      <span class="toast-message" id="toast-message">Action Complete!</span>
+    </div>
+  </div>
+
+  <!-- Local file:// protocol detection helper -->
+  <script>
+    if (window.location.protocol === 'file:') {
+      window.addEventListener('DOMContentLoaded', function() {
+        var notice = document.createElement('div');
+        notice.id = 'file-protocol-notice';
+        notice.innerHTML = `
+          <div style="position:fixed; top:24px; left:50%; transform:translateX(-50%); z-index:999999; background:#FFFDF8; border:3px solid #2B1E16; border-radius:14px; padding:18px 24px; box-shadow:0 10px 0 #2B1E16, 0 16px 30px rgba(0,0,0,0.35); max-width:620px; width:92%; text-align:center; font-family:'Fredoka', sans-serif;">
+            <div style="font-size:1.45rem; font-weight:900; color:#2B1E16; margin-bottom:8px;">✂️ Craft Workshop Local Preview Notice</div>
+            <p style="font-family:'Nunito', sans-serif; font-size:0.95rem; color:#4A382A; line-height:1.45; margin-bottom:12px;">
+              Modern web browsers (Chrome, Edge, Firefox) block 3D JavaScript modules and fetch over <code>file:///</code> for security.
+            </p>
+            <div style="background:#FAF4DF; border:2px dashed #2B1E16; border-radius:8px; padding:12px 16px; font-family:'Nunito', sans-serif; font-size:0.9rem; text-align:left; color:#2B1E16; line-height:1.6; margin-bottom:14px;">
+              <strong>Option 1 (Instant Terminal Server):</strong> Open this folder in terminal and run:<br>
+              <code style="background:#FFF; padding:2px 8px; border:1px solid #2B1E16; border-radius:4px; font-weight:700; color:#D9534F;">npx serve .</code> or <code style="background:#FFF; padding:2px 8px; border:1px solid #2B1E16; border-radius:4px; font-weight:700; color:#D9534F;">python -m http.server</code><br>
+              <strong>Option 2 (VS Code):</strong> Right-click <code>index.html</code> &rarr; <em>"Open with Live Server"</em><br>
+              <strong>Option 3 (GitHub Pages):</strong> Push to GitHub & enable GitHub Pages. It works automatically over HTTPS!
+            </div>
+            <button onclick="document.getElementById('file-protocol-notice').remove()" style="background:#5CB85C; color:#FFF; border:2px solid #2B1E16; border-radius:8px; padding:8px 20px; font-family:'Fredoka', sans-serif; font-size:0.95rem; font-weight:800; cursor:pointer; box-shadow:0 3px 0 #2B1E16;">Dismiss Notice</button>
+          </div>
+        `;
+        document.body.appendChild(notice);
+      });
+    }
+  </script>
+
+  <!-- Main JavaScript Application Module -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
